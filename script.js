@@ -10,44 +10,38 @@ bar.addEventListener('mousedown', startSlide, false);
 body.addEventListener('mouseup', stopSlide, false);
 
 // primeiro click no container
-function startSlide(event) {	
+function startSlide(event) {
 	event.preventDefault();
-	let position = getPosition(event, bar);
 	body.addEventListener('mousemove', moveSlide, false);
-	slider.style.width = position + 'px';
+	setSlidePosition(event, event.target);
 }
 
 function moveSlide(event) {
 	event.preventDefault();
-	let position = getPosition(event, bar);
-	if (position < 0) {
-		info.innerHTML = 'moving : 0%';
-		slider.style.width = '0px';
-	} else if (position >= bar.offsetWidth) {
-		info.innerHTML = 'moving : 100%';
-		slider.style.width = bar.offsetWidth + 'px';
-	} else {
-		info.innerHTML = 'moving : ' + position + 'px';
-		slider.style.width = position + 'px';
-	}
+	setSlidePosition(event, bar);
 }
 
 function stopSlide(event) {
 	event.preventDefault();
-	let position = getPosition(event, bar);
-
 	body.removeEventListener('mousemove', moveSlide, false);
-	if (position < 0) {
-		info.innerHTML = 'moving : 0%';
-		slider.style.width = '0%';
-	} else if (position >= bar.offsetWidth) {
-		info.innerHTML = bar.offsetWidth + 'px';
-		slider.style.width = '100%';
-	} else {
-		slider.style.width = position + 'px';
-	}
+    setSlidePosition(event, bar);
 }
 
 function getPosition(evento, bar) {
 	return evento.clientX - bar.offsetLeft;
+}
+
+function setSlidePosition(event, bar) {
+	let position = getPosition(event, bar);
+	if (position < 0) {
+		position = 0;
+	} else if (position >= bar.offsetWidth) {
+		position = bar.offsetWidth;
+	}
+	slider.style.width = position + 'px';
+	setInfo(position);
+}
+
+function setInfo(position) {
+	info.innerHTML = position + 'px';
 }
